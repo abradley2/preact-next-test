@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "standard",
+    "lint": "standard --fix",
     "build": "next build",
     "debug": "NODE_ENV=development node ./server.js",
     "start": "npm run build && NODE_ENV=production node ./server.js"
@@ -15,6 +16,11 @@
     "@zeit/next-preact": "0.0.7",
     "next": "^6.1.1",
     "preact": "^8.3.1",
-    "preact-compat": "^3.18.4"
+    "preact-compat": "^3.18.4",
+    "redux": "^4.0.0",
+    "redux-logger": "^3.0.6"
+  },
+  "devDependencies": {
+    "standard": "^12.0.1"
   }
 }
