@@ -1,5 +1,4 @@
 // server.js
-require('@zeit/next-preact/alias')()
 const { createServer } = require('http')
 const next = require('next')
 
