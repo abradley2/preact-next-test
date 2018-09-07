@@ -1,23 +1,11 @@
-import { Component } from 'preact'
+import Head from '../view/Head'
+import { withStore, dispatch } from '../update/store'
 
-export default class App extends Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      count: 0
-    }
-  }
-
-  render () {
-    return (<div>
-      <button onClick={() => this.setState({ count: this.state.count - 1 })}>
-        --
-      </button>
-      {this.state.count}
-      <button onClick={() => this.setState({ count: this.state.count + 1 })}>
-        ++
-      </button>
-    </div>)
-  }
+function Page () {
+  return <div>
+    <Head />
+    <h3>Hello There</h3>
+  </div>
 }
+
+export default withStore(Page)
