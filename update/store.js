@@ -36,7 +36,9 @@ Object.assign(Page.prototype, {
   componentDidMount: function () {
     this.unsub = Page.store.subscribe(() => {
       const state = Page.store.getState()
-
+      if (this.subscriptions) {
+        this.subscriptions(state, Page.store.dispatch)
+      }
       this.setState({state})
     })
   },
@@ -49,9 +51,10 @@ export function dispatch(...args) {
   return Page.store.dispatch(...args)
 }
 
-export function withStore (render, update) {
+export function withStore (render, update, subscriptions) {
   const PageWithStore = function (props) {
     Page.call(this, props, update)
+    this.subscriptions = subscriptions
   }
 
   PageWithStore.constructor = PageWithStore
