@@ -1,57 +1,64 @@
-import { Component } from 'preact'
-import { createStore, compose, applyMiddleware } from 'redux'
-import { createLogger } from 'redux-logger'
-import { install } from 'redux-loop'
-
-function reducer (state = 0, action) {
-  switch (action.type) {
-    case 'INCREMENT':
-      return state + 1
-    case 'DECRMENET':
-      return state - 1
-    default:
-      return state
-  }
-}
-
-// DO NOT EDIT BELOW THIS LINE
+import { Component } from "preact"
+import { createStore, compose, applyMiddleware } from "redux"
+import { withRouter } from "next/router"
+import { createLogger } from "redux-logger"
+import { install } from "redux-loop"
 
 const enhancer = compose(
   install(),
   applyMiddleware(createLogger())
 )
 
-const store = createStore(reducer, null, enhancer)
+// DO NOT EDIT BELOW THIS LINE
 
-export const dispatch = store.dispatch
-
-export function withStore (render) {
-  const Page = function (...args) {
-    Component.call(this, ...args)
-    store.dispatch({ type: '__INIT__' })
-    this.state = store.getState()
+/* eslint-disable */
+const Page = function (props, update) {
+  Component.call(this, props)
+  Page.update = update
+  
+  if (!Page.store) {
+    function reducer (...args) {
+      return Page.update(...args)
+    }
+    Page.store = createStore(reducer, enhancer)
   }
-
-  Page.constructor = Page
-  Page.prototype = Object.create(Component.prototype)
-
-  Object.assign(Page.prototype, {
-    componentDidMount: function () {
-      this.unsub = store.subscribe(() => {
-        const state = store.getState()
-
-        this.setState(state)
-      })
-    },
-    componentWillUnmount: function () {
-      this.unsub()
-    },
-    render
-  })
-
-  Page.getInitialProps = function ({ req }) {
-    return {}
+  Page.store.dispatch({ type: '__INIT__' })
+  this.state = {
+    state: Page.store.getState(),
+    route: props.route
   }
-
-  return Page
 }
+
+Page.constructor = Page
+Page.prototype = Object.create(Component.prototype)
+
+Object.assign(Page.prototype, {
+  componentDidMount: function () {
+    this.unsub = Page.store.subscribe(() => {
+      const state = Page.store.getState()
+
+      this.setState({state})
+    })
+  },
+  componentWillUnmount: function () {
+    this.unsub()
+  }
+})
+
+export function dispatch(...args) {
+  return Page.store.dispatch(...args)
+}
+
+export function withStore (render, update) {
+  const PageWithStore = function (props) {
+    Page.call(this, props, update)
+  }
+
+  PageWithStore.constructor = PageWithStore
+  PageWithStore.prototype = Object.create(Page.prototype)
+
+  Object.assign(PageWithStore.prototype, { render })
+
+  return withRouter(PageWithStore)
+}
+/* eslint-enable */
