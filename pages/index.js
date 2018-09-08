@@ -2,7 +2,7 @@ import Head from "../view/Head"
 import { withStore, dispatch } from "../update/store"
 import update from "../update/index"
 
-function Page (props, {state}) {
+function IndexPage (props, {state}) {
   return <div>
     <Head />
     <div>
@@ -21,4 +21,4 @@ function Page (props, {state}) {
   </div>
 }
 
-export default withStore(Page, update)
+export default withStore(IndexPage, update)
