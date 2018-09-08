@@ -7,6 +7,7 @@
     ],
     "env": {
         "browser": true,
+        "node": true,
         "commonjs": true,
         "es6": true
     },
@@ -18,6 +19,11 @@
     "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module"
+    },
+    "settings": {
+      "react": {
+        "version": "16.0"
+      }
     },
     "rules": {
         "indent": [
@@ -32,6 +38,7 @@
             "error",
             "double"
         ],
+        "jsx-quotes": "error",
         "react/react-in-jsx-scope": "off",
         "react/prop-types": "off",
         "fp/no-arguments": "error",
