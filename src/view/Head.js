@@ -14,7 +14,16 @@ export default function HeadView () {
       {`body {
         font-family: 'Roboto', sans-serif;
         font-size: 14px;
-      }`}
+        color: rgba(0, 0, 0, 0.90)
+      }
+      button {
+        transform: translateY(0px);
+        transition: .20s;
+      }
+      button:active {
+        transform: translateY(4px);
+      }
+      `}
     </style>
   </Head>)
 }
