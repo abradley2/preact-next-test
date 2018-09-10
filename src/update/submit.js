@@ -1,52 +1,48 @@
 import update from "immutability-helper"
 import { loop, Cmd } from "redux-loop"
-import { Just, Nothing, maybe } from "sanctuary"
+import { findWithIndex, maybe3 } from "../utils"
 
 const initialPageState = {
-  message: "Hello there",
+  message: "",
   scrubReasons: [
-    {name: "The Mix", value: false},
-    {name: "The Pressure", value: false},
-    {name: "The Setups", value: false},
-    {name: "The Shenanigans", value: false}
-  ]
+    {id: "mix", name: "The Mix", value: false},
+    {id: "pressure", name: "The Pressure", value: false},
+    {id: "setups", name: "The Setups", value: false},
+    {id: "shenanigans", name: "The Shenanigans", value: false}
+  ],
+  saltLevels: [
+    {id: 0, name: "Not salty at all"},
+    {id: 1, name: "Somewhat salty"},
+    {id: 2, name: "The salt is real"}
+  ],
+  selectedSaltLevel: null
 }
 
-const toggleScrubReason = (page, action) => {
-  const result = page.scrubReasons.reduce((acc, cur, idx) => {
-    if (acc.isJust) return acc
+const toggleScrubReason = (page, id) => {
+  const result = findWithIndex((cur) => cur.id === id, page.scrubReasons)
 
-    if (cur.name === action.name) {
-      return Just({reason: cur, idx})
-    }
-
-    return acc
-
-  }, Nothing)
-
-  return (maybe(
-    [page, Cmd.none]
-  )(
-    (found) => {
-      const updatedResult = update(found.reason, { $toggle: ["value"] })
+  return maybe3(
+    [page, Cmd.none],
+    (found) =>  {
+      const updatedResult = update(found.target, { $toggle: ["value"] })
 
       return [
         update(page, {
           scrubReasons: {
-            $splice: [[found.idx, 1, updatedResult]]
+            $splice: [[found.index, 1, updatedResult]]
           }
         }),
         Cmd.none
       ]
-    }
-  )(
+    },
     result
-  ))
+  )
 }
+
 
 function submitPageUpdate (page, action) {
   switch (action.type) {
-  case "EDIT_MESSAGE":
+  case "EDIT_POPOFF_MESSAGE":
     return [
       update(page, {
         message: {$set: action.message}
@@ -54,14 +50,21 @@ function submitPageUpdate (page, action) {
       Cmd.none
     ]
   case "TOGGLE_SCRUB_REASON":
-    return toggleScrubReason(page, action)
+    return toggleScrubReason(page, action.id)
+
+  case "SELECT_SALT_LEVEL":
+    return [
+      update(page, {
+        selectedSaltLevel: {$set: action.id}
+      }),
+      Cmd.none
+    ]
   }
   return [initialPageState, Cmd.none]
 }
 
 export default function (state, action) {
   const [page, cmd] = submitPageUpdate(state.page, action)
-
 
   return loop({...state, page}, cmd)
 }

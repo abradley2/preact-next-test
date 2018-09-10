@@ -1,6 +1,6 @@
 import cn from "classnames"
 
-export default function CheckBox(props) {
+export default function RadioButton(props) {
   return <div
     className={cn(
       "dt",
@@ -19,8 +19,8 @@ export default function CheckBox(props) {
       )}
     >
       {props.checked
-        ? "check_box"
-        : "check_box_outline_blank"
+        ? "radio_button_checked"
+        : "radio_button_unchecked"
       }
     </span>
     <span
