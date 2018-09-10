@@ -7,6 +7,7 @@ import ButtonLink from "../src/view/ButtonLink"
 import TextInput from "../src/view/TextInput"
 import CheckBox from "../src/view/CheckBox"
 import RadioButton from "../src/view/RadioButton"
+import FileInput from "../src/view/FileInput"
 
 const section = [
   "pt2"
@@ -139,15 +140,39 @@ function PopOffSection({state}) {
   </div>)
 }
 
+function UploadSection () {
+
+  return (<div>
+    <div
+      className={cn(
+        section,
+        "mt3",
+        "f4 black-90"
+      )}
+    >
+      Upload a screenshot of rage quitter
+    </div>
+    <div
+      className={cn(
+        section
+      )}
+    >
+      <FileInput />
+    </div>
+  </div>)
+}
+
 function SubmitPage (props, {state}) {
-  const { page } = state
   return <div>
     <Head />
     <div className="mw7 center pa2">
       <HeaderSection props={props} state={state} />
-      <ReasonsSection props={props} state={state} />
-      <SaltLevelSection props={props} state={state} />
-      <PopOffSection props={props} state={state} />
+      <div className="flex flex-column">
+        <UploadSection props={props} state={state} />
+        <ReasonsSection props={props} state={state} />
+        <SaltLevelSection props={props} state={state} />
+        <PopOffSection props={props} state={state} />
+      </div>
       <div
         className={cn(
           section
