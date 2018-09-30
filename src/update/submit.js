@@ -1,8 +1,28 @@
+/** @flow */
 import update from "immutability-helper"
 import { loop, Cmd } from "redux-loop"
 import { findWithIndex, maybe3 } from "../utils"
 
-const initialPageState = {
+type Msg
+   = { type: "EDIT_POPOFF_MESSAGE", message: string }
+   | { type: "TOGGLE_SCRUB_REASON", id: string }
+   | { type: "SELECT_SALT_LEVEL", id: number }
+
+type Page = {
+  message: string,
+  scrubReasons: Array<{
+    id: string,
+    name: string,
+    value: boolean
+  }>,
+  saltLevels: Array<{
+    id: number,
+    name: string
+  }>,
+  selectedSaltLevel: number | null
+}
+
+const initialPageState: Page = {
   message: "",
   scrubReasons: [
     {id: "mix", name: "The Mix", value: false},
@@ -18,7 +38,7 @@ const initialPageState = {
   selectedSaltLevel: null
 }
 
-const toggleScrubReason = (page, id) => {
+const toggleScrubReason = (page: Page, id: string) => {
   const result = findWithIndex((cur) => cur.id === id, page.scrubReasons)
 
   return maybe3(
@@ -40,7 +60,7 @@ const toggleScrubReason = (page, id) => {
 }
 
 
-function submitPageUpdate (page, action) {
+function submitPageUpdate (page: Page, action: Msg) {
   switch (action.type) {
   case "EDIT_POPOFF_MESSAGE":
     return [
@@ -63,7 +83,7 @@ function submitPageUpdate (page, action) {
   return [initialPageState, Cmd.none]
 }
 
-export default function (state, action) {
+export default function (state: any, action: Msg) {
   const [page, cmd] = submitPageUpdate(state.page, action)
 
   return loop({...state, page}, cmd)
